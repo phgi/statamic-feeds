@@ -2,9 +2,9 @@
 
 namespace Edalzell\Feeds;
 
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Route;
 use Statamic\Providers\AddonServiceProvider;
-use Edalzell\Feeds\Http\Controllers\FeedsController;
 
 class ServiceProvider extends AddonServiceProvider
 {
@@ -30,7 +30,7 @@ class ServiceProvider extends AddonServiceProvider
 
         $this->registerWebRoutes(function () {
             collect(config('feeds.types', []))->each(function ($feed, $key) {
-                Route::get($feed['route'], [FeedsController::class, $key]);
+                Route::get($feed['route'], Str::title($key));
             });
         });
     }
