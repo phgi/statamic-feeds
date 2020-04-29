@@ -1,0 +1,30 @@
+{
+  "name": "edalzell/feeds",
+  "description": "Feeds",
+  "type": "statamic-addon",
+  "autoload": {
+    "psr-4": {
+      "Edalzell\\Feeds\\": "src"
+    }
+  },
+  "authors": [
+    {
+      "name": "Erin Dalzell"
+    }
+  ],
+  "support": {
+    "email": "erin@thedalzells.org"
+  },
+  "extra": {
+    "statamic": {
+      "name": "Feeds",
+      "description": "Add JSON and/or Atom feeds to your site",
+      "version": "2.0"
+    },
+    "laravel": {
+      "providers": [
+        "Edalzell\\Feeds\\ServiceProvider"
+      ]
+    }
+  }
+}
