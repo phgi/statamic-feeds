@@ -1,6 +1,6 @@
 <?php
 
-namespace Edalzell\Feeds;
+namespace Edalzell\Feeds\Http\Controllers;
 
 use SimpleXMLElement;
 use Statamic\Facades\URL;
@@ -13,7 +13,7 @@ use Statamic\Facades\Config;
 use Statamic\Modifiers\Modify;
 use Statamic\Http\Controllers\Controller as BaseController;
 
-class Controller extends BaseController
+class FeedsController extends BaseController
 {
     /** @var string */
     private $title;
@@ -93,14 +93,14 @@ class Controller extends BaseController
         collect(config('feed.discovery', []))->each(function ($url, $key) use ($atom) {
             $link = $atom->addChild('link');
             $link->addAttribute('rel', 'hub');
-            $link->addAttribute('href', '//' . $url);
+            $link->addAttribute('href', '//'.$url);
             $link->addAttribute('xmlns', 'http://www.w3.org/2005/Atom');
         });
 
         $this->entries->each(function ($entry, $key) use ($atom) {
             $entryXml = $atom->addChild('entry');
 
-            $entryXml->addChild('id', 'urn:uuid:' . $entry->id());
+            $entryXml->addChild('id', 'urn:uuid:'.$entry->id());
             $entryXml->addChild('title', htmlspecialchars($entry->get('title')));
             $entryXml->addChild('author')
                 ->addChild('name', $this->makeName($entry->get($this->author_field)));
