@@ -2,24 +2,14 @@
 
 namespace Edalzell\Feeds;
 
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 use Statamic\Providers\AddonServiceProvider;
 
 class ServiceProvider extends AddonServiceProvider
 {
-    /**
-     * Indicates if loading of the provider is deferred.
-     *
-     * @var bool
-     */
     public $defer = false;
 
-    /**
-     * Bootstrap the application services.
-     *
-     * @return void
-     */
     public function boot()
     {
         parent::boot();
@@ -30,7 +20,8 @@ class ServiceProvider extends AddonServiceProvider
 
         $this->registerWebRoutes(function () {
             collect(config('feeds.types', []))->each(function ($feed, $key) {
-                Route::get($feed['route'], Str::title($key));
+                Route::namespace('\Edalzell\Feeds\Http\Controllers')
+                    ->get($feed['route'], Str::title($key));
             });
         });
     }
