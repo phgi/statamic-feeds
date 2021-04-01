@@ -20,8 +20,7 @@ class ServiceProvider extends AddonServiceProvider
         Statamic::booted(function () {
             $this->registerWebRoutes(function () {
                 collect(config('feeds.types', []))->each(function ($feed, $key) {
-                    Route::namespace('\Edalzell\Feeds\Http\Controllers')
-                        ->get($feed['route'], Str::title($key));
+                    Route::get($feed['route'], Str::title($key));
                 });
             });
         });
