@@ -88,25 +88,29 @@ class BaseController extends StatamicController
         if ($this->custom_content) {
             $content = Parse::template($this->content, $entry->data()->all());
         } else {
-            $content = $entry->parseContent();
+            $content = $entry->augmentedValue('content');
         }
 
         return $content;
     }
 
-    protected function makeName($id)
+    protected function makeName($ids)
     {
         $name = 'Anonymous';
 
-        if ($author = Data::find($id)) {
-            $this->name_fields;
-            $name = implode(
-                ' ',
-                array_merge(
-                    array_flip($this->name_fields),
-                    Arr::only($author->data()->all(), $this->name_fields)
-                )
-            );
+        if ($authors = collect($ids)->transform(function ($id) {return Entry::find($id);})) {
+
+            $authors = $authors->map(function($author) {
+                return implode(
+                    ' ',
+                    array_merge(
+                        array_flip($this->name_fields),
+                        Arr::only($author->data()->all(), $this->name_fields)
+                    )
+                );
+            })->toArray();
+
+            $name = implode(', ', $authors);
         }
 
         return $name;
