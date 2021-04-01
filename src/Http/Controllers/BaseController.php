@@ -2,15 +2,16 @@
 
 namespace Edalzell\Feeds\Http\Controllers;
 
-use Statamic\Facades\URL;
-use Statamic\Support\Arr;
-use Statamic\Facades\Data;
-use Statamic\Entries\Entry;
-use Statamic\Facades\Parse;
 use Illuminate\Http\Request;
+use Statamic\Auth\User;
+use Statamic\Entries\Entry;
 use Statamic\Facades\Config;
-use Statamic\Modifiers\Modify;
+use Statamic\Facades\Parse;
+use Statamic\Facades\URL;
+use Statamic\Facades\User as UserAPI;
 use Statamic\Http\Controllers\Controller as StatamicController;
+use Statamic\Modifiers\Modify;
+use Statamic\Support\Arr;
 
 class BaseController extends StatamicController
 {
@@ -86,20 +87,18 @@ class BaseController extends StatamicController
     protected function getContent(Entry $entry)
     {
         if ($this->custom_content) {
-            $content = Parse::template($this->content, $entry->data()->all());
-        } else {
-            $content = $entry->parseContent();
+            return Parse::template($this->custom_content, $entry->data()->all());
         }
 
-        return $content;
+        return $entry->parseContent();
     }
 
     protected function makeName($id)
     {
         $name = 'Anonymous';
 
-        if ($author = Data::find($id)) {
-            $this->name_fields;
+        /** @var User $author */
+        if ($author = UserAPI::find($id)) {
             $name = implode(
                 ' ',
                 array_merge(
