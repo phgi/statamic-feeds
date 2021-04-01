@@ -15,28 +15,28 @@ use Statamic\Http\Controllers\Controller as StatamicController;
 class BaseController extends StatamicController
 {
     /** @var string */
-    private $title;
+    protected $title;
 
     /** @var string */
-    private $feed_url;
+    protected $feed_url;
 
     /** @var string */
-    private $site_url;
+    protected $site_url;
 
     /** @var array */
-    private $name_fields;
+    protected $name_fields;
 
     /** @var string */
-    private $author_field;
+    protected $author_field;
 
     /** @var string */
-    private $custom_content;
+    protected $custom_content;
 
     /** @var string */
-    private $content;
+    protected $content;
 
     /** @var \Statamic\Data\Entries\EntryCollection */
-    private $entries;
+    protected $entries;
 
     public function __construct(Request $request)
     {
@@ -60,7 +60,7 @@ class BaseController extends StatamicController
             ->get();
     }
 
-    private function getItems()
+    protected function getItems()
     {
         return $this->entries->map(function ($entry) {
             $item = [
@@ -83,7 +83,7 @@ class BaseController extends StatamicController
         })->values()->all();
     }
 
-    private function getContent(Entry $entry)
+    protected function getContent(Entry $entry)
     {
         if ($this->custom_content) {
             $content = Parse::template($this->content, $entry->data()->all());
@@ -94,7 +94,7 @@ class BaseController extends StatamicController
         return $content;
     }
 
-    private function makeName($id)
+    protected function makeName($id)
     {
         $name = 'Anonymous';
 
