@@ -2,15 +2,16 @@
 
 namespace Edalzell\Feeds\Http\Controllers;
 
-use Statamic\Facades\URL;
-use Statamic\Support\Arr;
-use Statamic\Facades\Data;
-use Statamic\Entries\Entry;
-use Statamic\Facades\Parse;
 use Illuminate\Http\Request;
+use Statamic\Auth\User;
+use Statamic\Entries\Entry;
 use Statamic\Facades\Config;
-use Statamic\Modifiers\Modify;
+use Statamic\Facades\Parse;
+use Statamic\Facades\URL;
+use Statamic\Facades\User as UserAPI;
 use Statamic\Http\Controllers\Controller as StatamicController;
+use Statamic\Modifiers\Modify;
+use Statamic\Support\Arr;
 
 class BaseController extends StatamicController
 {
@@ -63,6 +64,7 @@ class BaseController extends StatamicController
     protected function getItems()
     {
         return $this->entries->map(function ($entry) {
+
             $item = [
                 'id' => $entry->id(),
                 'title' => $entry->get('title'),
@@ -86,19 +88,17 @@ class BaseController extends StatamicController
     protected function getContent(Entry $entry)
     {
         if ($this->custom_content) {
-            $content = Parse::template($this->content, $entry->data()->all());
-        } else {
-            $content = $entry->augmentedValue('content');
+            return Parse::template($this->custom_content, $entry->data()->all());
         }
 
-        return $content;
+        return $entry->augmentedValue('content');
     }
 
     protected function makeName($ids)
     {
         $name = 'Anonymous';
 
-        if ($authors = collect($ids)->transform(function ($id) {return Entry::find($id);})) {
+        if ($authors = collect($ids)->transform(function ($id) {return Entry::find($id);})){
 
             $authors = $authors->map(function($author) {
                 return implode(
